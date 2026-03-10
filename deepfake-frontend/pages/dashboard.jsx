@@ -1,37 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import StatsCards from '@/components/dashboard/StatsCards';
-import TrendChart from '@/components/dashboard/TrendChart';
-import PieChart from '@/components/dashboard/PieChart';
-import RecentDetections from '@/components/dashboard/RecentDetections';
-import { getRecentDetections, getStats } from '@/utils/api';
-import { useAlert } from '@/components/common/Alert';
-import Loader from '@/components/common/Loader';
+import StatsCards from '../components/dashboard/StatsCards';
+import TrendChart from '../components/dashboard/TrendChart';
+import PieChart from '../components/dashboard/PieChart';
+import RecentDetections from '../components/dashboard/RecentDetections';
+import { useAlert } from '../components/common/Alert';
+import Loader from '../components/common/Loader';
 
-export default function Dashboard() {
-  const [detections, setDetections] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+export default function DashboardPage() {
+  const [loading, setLoading] = useState(false);
   const { error } = useAlert();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // Sample data - replace with real API calls later
+  const stats = [
+    { title: 'Total Scans', value: '1,247', change: '+12.5%' },
+    { title: 'Deepfakes Detected', value: '324', change: '+8.2%' },
+    { title: 'Authentic Media', value: '923', change: '-3.1%' },
+    { title: 'Avg Response', value: '0.8s', change: '-0.2s' },
+  ];
 
-  const fetchData = async () => {
-    try {
-      const [detectionsData, statsData] = await Promise.all([
-        getRecentDetections(20),
-        getStats()
-      ]);
-      setDetections(detectionsData);
-      setStats(statsData);
-    } catch (err) {
-      error('Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const recentDetections = [
+    { id: 'DET-001', type: 'Image', filename: 'profile_photo.jpg', result: 'REAL', confidence: 98.5, date: '2024-01-15' },
+    { id: 'DET-002', type: 'Video', filename: 'interview.mp4', result: 'FAKE', confidence: 94.2, date: '2024-01-14' },
+    { id: 'DET-003', type: 'Audio', filename: 'voice_message.wav', result: 'FAKE', confidence: 87.3, date: '2024-01-14' },
+  ];
 
   if (loading) {
     return <Loader fullScreen text="Loading dashboard..." />;
@@ -41,7 +33,7 @@ export default function Dashboard() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-8"
+      className="space-y-8 p-6"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -51,39 +43,23 @@ export default function Dashboard() {
             Welcome back! Here's your deepfake detection overview
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="glass px-4 py-2 rounded-xl">
-            <span className="text-gray-400 mr-2">Last updated:</span>
-            <span className="text-white">{new Date().toLocaleDateString()}</span>
-          </div>
-          <button
-            onClick={fetchData}
-            className="btn-icon"
-            disabled={loading}
-          >
-            <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </button>
+        <div className="glass px-4 py-2 rounded-xl">
+          <span className="text-gray-400">Last updated:</span>
+          <span className="text-white ml-2">{new Date().toLocaleDateString()}</span>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Using your component */}
       <StatsCards stats={stats} />
 
       {/* Charts */}
-      <div className="charts-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TrendChart />
         <PieChart />
       </div>
 
-      {/* Recent Detections */}
-      <RecentDetections 
-        detections={detections} 
-        onView={(det) => console.log('View:', det)}
-        onDownload={(det) => console.log('Download:', det)}
-        onDelete={(det) => console.log('Delete:', det)}
-      />
+      {/* Recent Detections - Using your component */}
+      <RecentDetections detections={recentDetections} />
     </motion.div>
   );
 }

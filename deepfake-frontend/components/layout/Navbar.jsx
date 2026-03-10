@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion';  // ← THIS WAS MISSING
 import { 
   FiMenu, 
   FiBell, 
@@ -13,10 +13,6 @@ import {
   FiSun,
   FiChevronDown
 } from 'react-icons/fi';
-
-/**
- * Navbar Component - Main navigation bar
- */
 
 const Navbar = ({ sidebarOpen, setSidebarOpen, isMobile }) => {
   const router = useRouter();

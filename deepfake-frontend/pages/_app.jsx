@@ -1,7 +1,9 @@
-// pages/_app.jsx
 import '../styles/globals.css';
+import { AlertProvider } from '../components/common/Alert';
+import Layout from '../components/layout/Layout';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Loader from '../components/common/Loader';  // ← This path is correct!
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -23,11 +25,11 @@ export default function App({ Component, pageProps }) {
   }, [router]);
 
   return (
-    <>
-      {loading && (
-        <div className="fixed top-0 left-0 w-full h-1 bg-primary-500 animate-pulse z-50" />
-      )}
-      <Component {...pageProps} />
-    </>
+    <AlertProvider>
+      <Layout>
+        {loading && <Loader fullScreen text="Loading..." />}
+        <Component {...pageProps} />
+      </Layout>
+    </AlertProvider>
   );
 }

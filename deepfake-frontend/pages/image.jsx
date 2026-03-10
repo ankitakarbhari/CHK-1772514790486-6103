@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import ImageUploader from '@/components/detection/ImageUploader';
+import ImageUploader from '../components/detection/ImageUploader';
 import { FiInfo } from 'react-icons/fi';
 
 export default function ImagePage() {

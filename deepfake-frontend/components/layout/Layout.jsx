@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import Navbar from '../layout/Navbar';
+import Sidebar from '../layout/Sidebar';
 
 /**
  * Layout Component - Main layout wrapper

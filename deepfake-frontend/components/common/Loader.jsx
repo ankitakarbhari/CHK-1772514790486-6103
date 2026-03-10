@@ -1,30 +1,33 @@
-import Loader from '@/components/common/Loader';
-import { detectImage } from '@/utils/api';
-import { useAlert } from '@/components/common/Alert';
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const ImageUploader = () => {
-  const [loading, setLoading] = useState(false);
-  const { error } = useAlert();
-
-  const handleUpload = async (file) => {
-    setLoading(true);
-    try {
-      const result = await detectImage(file);
-      console.log('Result:', result);
-    } catch (err) {
-      error('Upload failed');
-    } finally {
-      setLoading(false);
-    }
+const Loader = ({ size = 'md', fullScreen = false, text = 'Loading...' }) => {
+  const sizes = {
+    sm: 'w-6 h-6 border-2',
+    md: 'w-10 h-10 border-3',
+    lg: 'w-16 h-16 border-4',
   };
 
-  return (
-    <div>
-      {loading ? (
-        <Loader text="Analyzing image..." />
-      ) : (
-        <button onClick={() => handleUpload(file)}>Upload</button>
-      )}
+  const spinner = (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        className={`${sizes[size]} border-primary-200 border-t-primary-600 rounded-full`}
+      />
+      {text && <p className="text-gray-400 animate-pulse">{text}</p>}
     </div>
   );
+
+  if (fullScreen) {
+    return (
+      <div className="fixed inset-0 bg-dark-500/80 backdrop-blur-sm flex items-center justify-center z-50">
+        {spinner}
+      </div>
+    );
+  }
+
+  return spinner;
 };
+
+export default Loader;
