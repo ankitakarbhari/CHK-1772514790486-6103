@@ -1,30 +1,21 @@
-# app/api/stats.py
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from typing import List
+from fastapi import APIRouter, HTTPException
+from app.services.stats_service import get_system_stats
 
-from app.database import get_db
-from app.services.detection_service import DetectionService
-from app.schemas.responses import StatsResponse
+router = APIRouter()
 
-router = APIRouter(prefix="/api", tags=["stats"])
 
-@router.get("/stats", response_model=StatsResponse)
-async def get_stats(db: Session = Depends(get_db)):
+@router.get("/")
+async def stats():
     """
-    Get dashboard statistics
-    Matches your frontend dashboard stats
+    Return system detection statistics
     """
-    service = DetectionService(db)
-    return service.get_stats()
+    try:
+        stats = get_system_stats()
 
-@router.get("/detections/recent")
-async def get_recent_detections(
-    limit: int = 10,
-    db: Session = Depends(get_db)
-):
-    """
-    Get recent detections for dashboard table
-    """
-    service = DetectionService(db)
-    return service.get_recent_detections(limit)
+        return {
+            "status": "success",
+            "data": stats
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

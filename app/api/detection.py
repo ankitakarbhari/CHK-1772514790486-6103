@@ -1,80 +1,65 @@
-# app/api/detection.py
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, Request
-from sqlalchemy.orm import Session
-from typing import List
-import logging
+from fastapi import APIRouter, UploadFile, File, HTTPException
+from app.services.ml_service import (
+    detect_image_deepfake,
+    detect_video_deepfake,
+    detect_audio_deepfake
+)
 
-from app.database import get_db
-from app.services.detection_service import DetectionService
-from app.services.file_service import FileService
-from app.schemas.responses import DetectionResponse, DetailedDetectionResponse
+router = APIRouter()
 
-router = APIRouter(prefix="/api", tags=["detection"])
-logger = logging.getLogger(__name__)
 
-@router.post("/detect/image")
-async def detect_image(
-    request: Request,
-    file: UploadFile = File(...),
-    generate_heatmap: bool = Form(False),
-    db: Session = Depends(get_db)
-):
+@router.post("/image")
+async def detect_image(file: UploadFile = File(...)):
     """
-    Detect deepfake in uploaded image
-    Matches your frontend ImageUploader component
+    Detect deepfake in an uploaded image
     """
     try:
-        # Read file
-        file_data = await file.read()
-        
-        # Validate
-        if not file.content_type.startswith('image/'):
-            raise HTTPException(400, "File must be an image")
-        
-        # Save temporarily
-        file_service = FileService()
-        file_path = file_service.save_file(file_data, file.filename, 'images')
-        
-        # Process
-        detection_service = DetectionService(db)
-        result = detection_service.process_image(
-            file_path, 
-            file.filename, 
-            generate_heatmap,
-            request.client.host
-        )
-        
-        # Clean up
-        file_service.delete_file(file_path)
-        
-        if not result.get('success', True):
-            raise HTTPException(500, result.get('error', 'Detection failed'))
-        
-        return result
-        
-    except Exception as e:
-        logger.error(f"Image detection error: {e}")
-        raise HTTPException(500, str(e))
+        contents = await file.read()
+        result = detect_image_deepfake(contents)
 
-@router.post("/detect/text")
-async def detect_text(
-    request: Request,
-    text: str = Form(...),
-    db: Session = Depends(get_db)
-):
+        return {
+            "type": "image",
+            "filename": file.filename,
+            "result": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/video")
+async def detect_video(file: UploadFile = File(...)):
     """
-    Detect AI-generated text
-    Matches your frontend TextAnalyzer component
+    Detect deepfake in an uploaded video
     """
     try:
-        detection_service = DetectionService(db)
-        result = detection_service.process_text(text, request.client.host)
-        
-        if not result.get('success', True):
-            raise HTTPException(500, result.get('error', 'Detection failed'))
-        
-        return result
-        
+        contents = await file.read()
+        result = detect_video_deepfake(contents)
+
+        return {
+            "type": "video",
+            "filename": file.filename,
+            "result": result
+        }
+
     except Exception as e:
-        logger.error(f"Text detection error: {e}")
-        raise HTTPException(500, str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/audio")
+async def detect_audio(file: UploadFile = File(...)):
+    """
+    Detect deepfake in uploaded audio
+    """
+    try:
+        contents = await file.read()
+        result = detect_audio_deepfake(contents)
+
+        return {
+            "type": "audio",
+            "filename": file.filename,
+            "result": result
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

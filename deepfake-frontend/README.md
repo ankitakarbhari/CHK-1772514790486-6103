@@ -1,3 +1,50 @@
+<<<<<<< HEAD
+﻿
+# CHK-1772514790486-6103
+
+# 🛡️ DeepShield AI - Deepfake Detection System
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.13%2B-brightgreen)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-green)
+![React](https://img.shields.io/badge/React-18.2.0-61dafb)
+
+## 📋 Overview
+Advanced AI-powered system to detect deepfakes in images, videos, audio, and text with 98%+ accuracy.
+
+## ✨ Features
+- 🖼️ **Image Detection** - AI-generated & manipulated images
+- 🎥 **Video Analysis** - Frame-by-frame deepfake detection
+- 🎵 **Audio Forensics** - Synthetic voice detection
+- 📝 **Text Analysis** - AI-generated content (GPT, Claude)
+- 🔗 **URL Scanning** - Phishing & malicious link detection
+- 📹 **Live Camera** - Real-time face swap detection
+- ⛓️ **Blockchain** - Immutable authenticity records
+
+## 🛠️ Tech Stack
+- **Backend**: FastAPI, PyTorch, OpenCV, Transformers
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Database**: SQLite/Redis
+- **Blockchain**: Web3.py, IPFS
+
+## 🚀 Quick Start
+
+### Backend Setup
+```bash
+# Clone repo
+git clone https://github.com/ankitakarbhari/CHK-1772514790486-6103.git
+cd CHK-1772514790486-6103
+
+# Setup Python environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+
+# Run server
+python run.py
+# Server: http://localhost:8000
+
+=======
 # 🛡️ DeepShield AI - Deepfake Detection System
 
 <div align="center">
@@ -115,3 +162,4 @@ The platform provides both a **web interface** for easy use and a **RESTful API*
 ---
 
 ## 🏗 System Architecture
+>>>>>>> 1b192e8e (Describe your update)
